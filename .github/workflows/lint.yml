@@ -1,0 +1,39 @@
+name: Terraform Static Analysis
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  lint-terraform:
+    name: Terraform Static Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ~1.12
+
+    - name: Install TFLint and TFSec
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget
+        
+        # Install TFLint
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+        
+        # Install TFSec
+        curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Run Static Analysis
+      run: make all-static 
