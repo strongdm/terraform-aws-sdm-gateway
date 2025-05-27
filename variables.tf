@@ -19,3 +19,8 @@ variable "vpc_id" {
   description = "The VPC ID where the gateway instance will be deployed"
   type        = string 
 }
+
+variable "name" {
+  description = "The name of the gateway instance"
+  type        = string
+}

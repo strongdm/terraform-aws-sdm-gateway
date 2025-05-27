@@ -1,4 +1,4 @@
 output "name_id" {
-  description = "SHORT Description"
-  value       = value
+  description = "Unique identifier for the gateway instance"
+  value       = strongdm_gateway.gateway.id
 }
