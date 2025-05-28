@@ -49,3 +49,9 @@ module "strongdm_aws" {
 
 ## Inputs, Outputs, and Resources
 See the respective documentation files for details.
+
+## How to Contribute
+Check out the Makefile and github actions for detailed steps on what checks are required for your commit to pass.
+
+To quickly check all static analysis run
+`make all-static`
