@@ -2,9 +2,24 @@
 
 This template provides a foundation for creating AWS-based StrongDM deployments using Terraform.
 
+## Standards & Requirements
+
+### Tagging Standards
+All resources should include these tags:
+- `Environment`: Production, Staging, Development, etc.
+- `Owner`: Team or individual responsible for the resource
+- `Project`: Project or application name
+
+Additional standard tags are automatically applied:
+- `Name`: Resource identifier
+- `ManagedBy`: "terraform"
+- `Application`: "strongdm"
+
+
 ## Features
 - AWS-specific resource provisioning for StrongDM gateways
 - Standardized module structure for consistency
+- Enforced tagging
 
 ## Usage
 ```hcl
@@ -12,13 +27,17 @@ module "strongdm_aws" {
   source = "path/to/terraform-aws-template"
   
   // Required parameters
-  aws_region     = "us-west-2"
-  gateway_name   = "aws-production-gateway"
+  aws_region = "us-west-2"
+  name       = "aws-production-gateway"
+  vpc_id     = "vpc-xxxxxxxx"
+  subnet_id  = "subnet-xxxxxxxx"
   
-  // Optional parameters with defaults
-  instance_type  = "t3.medium"
-  vpc_id         = "vpc-xxxxxxxx"
-  // Additional parameters...
+  // Required: Compliance tags
+  tags = {
+    Environment = "Production"
+    Owner       = "platform-team"
+    Project     = "strongdm-infrastructure"
+  }
 }
 ```
 
