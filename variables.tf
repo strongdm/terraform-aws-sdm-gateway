@@ -7,7 +7,7 @@ variable "tags" {
   description = "Tags to apply to all resources. Required tags: Environment, Owner, Project"
   type        = map(string)
   default     = {}
-  
+
   validation {
     condition = alltrue([
       contains(keys(var.tags), "Environment"),
