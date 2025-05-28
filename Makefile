@@ -12,4 +12,4 @@ fmt:
 	terraform fmt
 
 .PHONY: fmt lint validate 
-all: fmt lint validate
+all-static: fmt lint validate
