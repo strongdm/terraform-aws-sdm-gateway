@@ -11,6 +11,11 @@ jobs:
     name: Run Terratest
     runs-on: ubuntu-latest
     environment: dev
+    env:
+      TF_VAR_aws_region: ${{ secrets.TF_VAR_AWS_REGION }}
+      TF_VAR_subnet_id:   ${{ secrets.TF_VAR_SUBNET_ID }}
+      TF_VAR_vpc_id:      ${{ secrets.TF_VAR_VPC_ID }}
+      TF_VAR_tags:        ${{ vars.TF_VAR_TAGS }}
     
     steps:
     - name: Checkout code
@@ -33,12 +38,6 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.TF_VAR_AWS_REGION }}
 
-    - name: Set environment variables
-      run: |
-        echo "TF_VAR_aws_region=${{ secrets.TF_VAR_AWS_REGION }}" >> $GITHUB_ENV
-        echo "TF_VAR_subnet_id=${{ secrets.TF_VAR_SUBNET_ID }}" >> $GITHUB_ENV
-        echo "TF_VAR_vpc_id=${{ secrets.TF_VAR_VPC_ID }}" >> $GITHUB_ENV
-        echo 'TF_VAR_tags=${{ vars.TF_VAR_TAGS }}' >> $GITHUB_ENV
 
     - name: Download Go modules
       run: go mod download
