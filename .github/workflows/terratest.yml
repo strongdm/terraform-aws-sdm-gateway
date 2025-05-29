@@ -38,7 +38,7 @@ jobs:
         echo "TF_VAR_aws_region=${{ secrets.TF_VAR_AWS_REGION }}" >> $GITHUB_ENV
         echo "TF_VAR_subnet_id=${{ secrets.TF_VAR_SUBNET_ID }}" >> $GITHUB_ENV
         echo "TF_VAR_vpc_id=${{ secrets.TF_VAR_VPC_ID }}" >> $GITHUB_ENV
-        echo "TF_VAR_tags=${{ vars.TF_VAR_TAGS }}" >> $GITHUB_ENV
+        echo 'TF_VAR_tags=${{ vars.TF_VAR_TAGS }}' >> $GITHUB_ENV
 
     - name: Download Go modules
       run: go mod download
