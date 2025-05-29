@@ -1,0 +1,47 @@
+name: Terratest
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  terratest:
+    name: Run Terratest
+    runs-on: ubuntu-latest
+    environment: dev
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ~1.0
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.TF_VAR_AWS_REGION }}
+
+    - name: Set environment variables
+      run: |
+        echo "TF_VAR_aws_region=${{ secrets.TF_VAR_AWS_REGION }}" >> $GITHUB_ENV
+        echo "TF_VAR_subnet_id=${{ secrets.TF_VAR_SUBNET_ID }}" >> $GITHUB_ENV
+        echo "TF_VAR_vpc_id=${{ secrets.TF_VAR_VPC_ID }}" >> $GITHUB_ENV
+        echo "TF_VAR_tags=${{ vars.TF_VAR_TAGS }}" >> $GITHUB_ENV
+
+    - name: Download Go modules
+      run: go mod download
+
+    - name: Run Terratest
+      run: go test -v ./test -timeout 30m 

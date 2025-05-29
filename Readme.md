@@ -55,3 +55,9 @@ Check out the Makefile and github actions for detailed steps on what checks are 
 
 To quickly check all static analysis run
 `make all-static`
+
+To run terratest
+`go test -v ./test`
+
+If you're using direnv to inject environment variables:
+`direnv exec . go test -v ./test`
