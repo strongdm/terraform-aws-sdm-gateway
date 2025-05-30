@@ -15,4 +15,4 @@ test:
 	go test -v ./test
 
 .PHONY: fmt lint validate test
-all-static: fmt lint validate test
+all-static: fmt lint validate
