@@ -9,7 +9,7 @@ output "subnet_id" {
 }
 
 output "default_tags" {
-  description = "Standard tags applied to all resources (includes Name, ManagedBy, Application)"
+  description = "Standard tags applied to all resources"
   value       = local.default_tags
 }
 
