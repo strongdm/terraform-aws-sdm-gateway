@@ -16,7 +16,6 @@ func TestTerraformBasic(t *testing.T) {
 			"aws_region": os.Getenv("TF_VAR_aws_region"),
 			"subnet_id":  os.Getenv("TF_VAR_subnet_id"),
 			"vpc_id":     os.Getenv("TF_VAR_vpc_id"),
-			"name":       os.Getenv("TF_VAR_name"),
 		},
 		EnvVars: map[string]string{
 			"TF_VAR_tags": os.Getenv("TF_VAR_tags"),
