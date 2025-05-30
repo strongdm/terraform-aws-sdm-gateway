@@ -11,5 +11,8 @@ plan:
 fmt:
 	terraform fmt
 
-.PHONY: fmt lint validate 
-all-static: fmt lint validate
+test:
+	go test -v ./test
+
+.PHONY: fmt lint validate test
+all-static: fmt lint validate test

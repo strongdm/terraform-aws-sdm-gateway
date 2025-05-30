@@ -12,3 +12,8 @@ output "default_tags" {
   description = "Standard tags applied to all resources (includes Name, ManagedBy, Application)"
   value       = local.default_tags
 }
+
+output "sdm_account_ids" {
+  description = "StrongDM account IDs"
+  value       = data.sdm_account.api-key-queries.ids
+}

@@ -16,6 +16,8 @@ jobs:
       TF_VAR_subnet_id:   ${{ secrets.TF_VAR_SUBNET_ID }}
       TF_VAR_vpc_id:      ${{ secrets.TF_VAR_VPC_ID }}
       TF_VAR_tags:        ${{ vars.TF_VAR_TAGS }}
+      TF_VAR_SDM_API_ACCESS_KEY: ${{ secrets.SDM_API_ACCESS_KEY }}
+      TF_VAR_SDM_API_SECRET_KEY: ${{ secrets.SDM_API_SECRET_KEY }}
     
     steps:
     - name: Checkout code

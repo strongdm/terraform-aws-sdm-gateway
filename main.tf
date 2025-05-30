@@ -2,13 +2,15 @@ provider "aws" {
   region = var.aws_region
 }
 
-provider "strongdm" {}
+provider "sdm" {
+  api_access_key = var.SDM_API_ACCESS_KEY
+  api_secret_key = var.SDM_API_SECRET_KEY
+}
 
 locals {
   default_tags = merge(
     var.tags,
     {
-      Name        = var.name
       ManagedBy   = "terraform"
       Application = "strongdm"
     }
@@ -22,3 +24,8 @@ data "aws_vpc" "vpc" {
 data "aws_subnet" "subnet" {
   id = var.subnet_id
 }
+
+data "sdm_account" "api-key-queries" {
+  type = "api"
+  name = "*github*"
+} 

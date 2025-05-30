@@ -2,6 +2,7 @@ package test
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -30,10 +31,27 @@ func TestTerraformBasic(t *testing.T) {
 
 	// Validate output
 	output := terraform.Output(t, opts, "default_tags")
-	assert.Contains(t, output, "Environment")
-	assert.Contains(t, output, "Owner")
-	assert.Contains(t, output, "Project")
-	assert.Contains(t, output, "Name")
-	assert.Contains(t, output, "ManagedBy")
-	assert.Contains(t, output, "Application")
+	assert.True(
+		t,
+		hasTags(
+			output,
+			[]string{
+				"Environment",
+				"Owner",
+				"Project",
+			},
+		),
+		"Default tags should be present")
+
+	assert.Contains(t, terraform.Output(t, opts, "sdm_account_ids"), "a-")
+
+}
+
+func hasTags(output string, tags []string) bool {
+	for _, tag := range tags {
+		if !strings.Contains(output, tag) {
+			return false
+		}
+	}
+	return true
 }

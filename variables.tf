@@ -23,12 +23,17 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "name" {
-  description = "The name of the gateway instance"
+variable "subnet_id" {
+  description = "The subnet ID where the gateway instance will be deployed"
   type        = string
 }
 
-variable "subnet_id" {
-  description = "The subnet ID where the gateway instance will be deployed"
+variable "SDM_API_ACCESS_KEY" {
+  description = "The API access key for the StrongDM API"
+  type        = string
+}
+
+variable "SDM_API_SECRET_KEY" {
+  description = "The API secret key for the StrongDM API"
   type        = string
 }

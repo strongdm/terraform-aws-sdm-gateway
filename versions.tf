@@ -6,9 +6,9 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 4.0.0"
     }
-    strongdm = {
-      source  = "strongdm/sdm"
-      version = ">= 1.0.0"
+    sdm = {
+      source = "strongdm/sdm"
+      version = ">=3.3.0"
     }
   }
 }
