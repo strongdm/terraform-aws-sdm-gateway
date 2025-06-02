@@ -5,7 +5,7 @@ lint:
 validate:
 	terraform validate
 
-plan:
+plan: validate
 	terraform plan
 
 fmt:
@@ -14,5 +14,8 @@ fmt:
 test:
 	go test -v ./test
 
-.PHONY: fmt lint validate test
+bootstrap:
+	brew install tfsec tflint terraform
+
+.PHONY: fmt lint validate plan test bootstrap all-static
 all-static: fmt lint validate
