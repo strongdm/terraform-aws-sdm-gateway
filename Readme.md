@@ -50,14 +50,20 @@ module "strongdm_aws" {
 ## Inputs, Outputs, and Resources
 See the respective documentation files for details.
 
-## How to Contribute
-Check out the Makefile and github actions for detailed steps on what checks are required for your commit to pass.
+## Contributing
 
-To quickly check all static analysis run
-`make all-static`
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for detailed information about:
 
-To run terratest
-`go test -v ./test`
+- **Commit Message Standards**: We use [Conventional Commits](https://www.conventionalcommits.org/) for consistent commit messages
+- **Development Workflow**: Setup, testing, and submission process
+- **Code Standards**: Terraform and Go formatting requirements
 
-If you're using direnv to inject environment variables:
-`direnv exec . go test -v ./test`
+### Quick Start for Contributors
+
+1. **Static Analysis**: `make all-static`
+2. **Run Tests**: `go test -v ./test`
+3. **With direnv**: `direnv exec . go test -v ./test`
+
+### Quick References
+- **[Contributing Guide](CONTRIBUTING.md)**: Complete development workflow and standards
+- **[Commit Reference](docs/COMMIT_REFERENCE.md)**: Quick lookup for commit message format
