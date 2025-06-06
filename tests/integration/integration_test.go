@@ -11,7 +11,7 @@ import (
 
 func TestTerraformIntegration(t *testing.T) {
 	opts := &terraform.Options{
-		TerraformDir: "../", // Path to your Terraform code
+		TerraformDir: "../../", // Path to your Terraform code
 		Vars: map[string]interface{}{
 			"aws_region": os.Getenv("TF_VAR_aws_region"),
 			"subnet_id":  os.Getenv("TF_VAR_subnet_id"),
