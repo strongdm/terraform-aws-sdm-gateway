@@ -61,8 +61,8 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ### Quick Start for Contributors
 
 1. **Static Analysis**: `make all-static`
-2. **Run Tests**: `go test -v ./test`
-3. **With direnv**: `direnv exec . go test -v ./test`
+2. **Run Tests**: `go test -v ./tests`
+3. **With direnv**: `direnv exec . go test -v ./tests`
 
 ### Quick References
 - **[Contributing Guide](CONTRIBUTING.md)**: Complete development workflow and standards
