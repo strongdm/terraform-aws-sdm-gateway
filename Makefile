@@ -11,8 +11,14 @@ plan: validate
 fmt:
 	terraform fmt
 
-test:
-	go test -v ./test
+unit-test:
+	terraform test -test-directory=./tests/unit
+
+integration-test:
+	go test -v ./tests/integration -timeout 1m
+
+
+test: unit-test	integration-test
 
 bootstrap:
 	brew install tfsec tflint terraform
