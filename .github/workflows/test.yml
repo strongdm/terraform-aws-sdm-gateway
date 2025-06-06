@@ -41,7 +41,7 @@ jobs:
         aws-region: ${{ secrets.TF_VAR_AWS_REGION }}
 
     - name: Run Terraform test
-      run: terraform test -test-directory=./tests/unit -timeout=10s
+      run: terraform test -test-directory=./tests/unit
 
     - name: Download Go modules
       run: go mod download
