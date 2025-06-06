@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTerraformBasic(t *testing.T) {
+func TestEnforceTagsAndProviders(t *testing.T) {
 	opts := &terraform.Options{
 		TerraformDir: "../", // Path to your Terraform code
 		Vars: map[string]interface{}{
