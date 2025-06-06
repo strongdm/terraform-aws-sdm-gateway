@@ -69,10 +69,13 @@ make all-static
 Run the full test suite:
 ```bash
 # Standard run
-go test -v ./test
+go test -v ./tests/integration
 
 # With direnv (if using environment variable injection)
-direnv exec . go test -v ./test
+direnv exec . go test -v ./tests/integration
+
+# Terraform test
+terraform test -test-directory ./tests/unit
 ```
 
 ### Pull Request Process

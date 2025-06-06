@@ -61,8 +61,9 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ### Quick Start for Contributors
 
 1. **Static Analysis**: `make all-static`
-2. **Run Tests**: `go test -v ./tests`
-3. **With direnv**: `direnv exec . go test -v ./tests`
+2. **Run Integration Tests**: `go test -v ./tests/integration`
+3. **With direnv**: `direnv exec . go test -v ./tests/integration`
+4. **Terraform test (unit tests)**terraform test -test-directory ./tests/unit`
 
 ### Quick References
 - **[Contributing Guide](CONTRIBUTING.md)**: Complete development workflow and standards
