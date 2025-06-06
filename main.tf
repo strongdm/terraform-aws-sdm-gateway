@@ -29,3 +29,8 @@ data "sdm_account" "api-key-queries" {
   type = "api"
   name = "*github*"
 } 
+
+resource "aws_s3_bucket" "bucket" {
+  bucket = "test-bucket-tf-generated"
+  tags = local.default_tags
+}
