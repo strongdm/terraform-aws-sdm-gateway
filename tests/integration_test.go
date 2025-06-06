@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEnforceTagsAndProviders(t *testing.T) {
+func TestTerraformIntegration(t *testing.T) {
 	opts := &terraform.Options{
 		TerraformDir: "../", // Path to your Terraform code
 		Vars: map[string]interface{}{
@@ -22,12 +22,26 @@ func TestEnforceTagsAndProviders(t *testing.T) {
 		},
 	}
 
-	// Cleanup at the end
+	// Single deployment for all tests
 	defer terraform.Destroy(t, opts)
-
-	// Init and apply
 	terraform.InitAndApply(t, opts)
 
+	// Run individual test scenarios as subtests
+	t.Run("S3Bucket", func(t *testing.T) {
+		testS3Bucket(t, opts)
+	})
+
+	t.Run("TagsAndProviders", func(t *testing.T) {
+		testEnforceTagsAndProviders(t, opts)
+	})
+}
+
+func testS3Bucket(t *testing.T, opts *terraform.Options) {
+	s3BucketId := terraform.Output(t, opts, "s3_bucket_id")
+	assert.Equal(t, "test-bucket-tf-generated", s3BucketId)
+}
+
+func testEnforceTagsAndProviders(t *testing.T, opts *terraform.Options) {
 	// Validate output
 	output := terraform.Output(t, opts, "default_tags")
 	assert.True(
@@ -43,7 +57,6 @@ func TestEnforceTagsAndProviders(t *testing.T) {
 		"Default tags should be present")
 
 	assert.Contains(t, terraform.Output(t, opts, "sdm_account_ids"), "a-")
-
 }
 
 func hasTags(output string, tags []string) bool {
