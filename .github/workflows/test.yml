@@ -40,11 +40,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.TF_VAR_AWS_REGION }}
 
-    - name: Run Terraform test
-      run: terraform test -test-directory=./tests/unit
+    - name: Run Terraform unit tests
+      run: make unit-test
 
     - name: Download Go modules
       run: go mod download
 
-    - name: Run Terratest
-      run: go test -v ./tests/integration -timeout 1m 
+    - name: Run Terratest integration tests
+      run: make integration-test
