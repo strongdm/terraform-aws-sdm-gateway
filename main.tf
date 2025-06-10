@@ -30,17 +30,43 @@ data "sdm_account" "api-key-queries" {
   name = "*github*"
 }
 
-# test bucket does not need to comply with tfsec rules
-#tfsec:ignore:aws-s3-block-public-acls
-#tfsec:ignore:aws-s3-block-public-policy  
-#tfsec:ignore:aws-s3-enable-bucket-encryption
-#tfsec:ignore:aws-s3-ignore-public-acls
-#tfsec:ignore:aws-s3-no-public-buckets
-#tfsec:ignore:aws-s3-encryption-customer-key
-#tfsec:ignore:aws-s3-enable-bucket-logging
-#tfsec:ignore:aws-s3-enable-versioning
-#tfsec:ignore:aws-s3-specify-public-access-block
-resource "aws_s3_bucket" "bucket" {
-  bucket = "test-bucket-tf-generated"
-  tags   = local.default_tags
+data "aws_ami" "latest_gateway" {
+  most_recent = true
+
+  owners = ["522179138863"] # StrongDM's account ID
+
+  filter {
+    name   = "name"
+    values = ["strongdm/gateway/*"]
+  }
+
+}
+
+
+
+resource "aws_instance" "gateway_ec2" {
+  ami           = data.aws_ami.latest_gateway.id
+  instance_type = var.instance_type
+  subnet_id     = data.aws_subnet.subnet.id
+  vpc_security_group_ids = [aws_security_group.sg.id]
+  tags = merge(local.default_tags, {
+    Name = "sdm-gw-01"
+  })
+}
+
+resource "aws_security_group" "sg" {
+  name = "sdm-gw-sg-sdm"
+  description = "Security group for the StrongDM gateway"
+  vpc_id = data.aws_vpc.vpc.id
+  
+
+  tags = local.default_tags
+}
+
+resource "aws_vpc_security_group_ingress_rule" "sdm_sg_ingress_rule" {
+  security_group_id = aws_security_group.sg.id
+  from_port = 5000
+  to_port = 5000
+  ip_protocol = "tcp"
+  cidr_ipv4 = "0.0.0.0/0"
 }

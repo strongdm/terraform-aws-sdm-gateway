@@ -37,3 +37,9 @@ variable "SDM_API_SECRET_KEY" {
   description = "The API secret key for the StrongDM API"
   type        = string
 }
+
+variable "instance_type" {
+  description = "The instance type for the gateway instance"
+  type        = string
+  default     = "t3.medium"
+}

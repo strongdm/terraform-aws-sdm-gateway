@@ -9,6 +9,8 @@ variables {
   }
   SDM_API_ACCESS_KEY = "test-access-key"
   SDM_API_SECRET_KEY = "test-secret-key"
+
+  
 }
 
 mock_provider "aws" {
@@ -34,22 +36,54 @@ mock_provider "sdm" {
   }
 }
 
-run "validate_s3_test_bucket_created" {
+run "validate_ec2_instance_created" {
   command = plan
 
   assert {
-    condition     = aws_s3_bucket.bucket.bucket == "test-bucket-tf-generated"
-    error_message = "S3 bucket should be created"
+    condition     = aws_instance.gateway_ec2.tags["Name"] == "sdm-gw-01"
+    error_message = "EC2 instance should be created"
   }
-  
+
   assert {
     condition = alltrue([
-      aws_s3_bucket.bucket.tags["Environment"] == "test",
-      aws_s3_bucket.bucket.tags["Owner"] == "terraform-test",
-      aws_s3_bucket.bucket.tags["Project"] == "sdm-template",
-      aws_s3_bucket.bucket.tags["Application"] == "strongdm",
-      aws_s3_bucket.bucket.tags["ManagedBy"] == "terraform"
+      aws_instance.gateway_ec2.tags["Environment"] == "test",
+      aws_instance.gateway_ec2.tags["Owner"] == "terraform-test",
+      aws_instance.gateway_ec2.tags["Project"] == "sdm-template",
+      aws_instance.gateway_ec2.tags["Application"] == "strongdm",
+      aws_instance.gateway_ec2.tags["ManagedBy"] == "terraform"
     ])
-    error_message = "S3 bucket must have all required tags with correct values"
+    error_message = "EC2 instance should have the correct tags"
   }
+}
+
+run "validate_ec2_security_group_created" {
+  command = plan
+
+  assert {
+    condition     = aws_security_group.sg.name == "sdm-gw-sg-sdm"
+    error_message = "Security group should be created"
+  }
+
+  assert {
+    condition = alltrue([
+      aws_vpc_security_group_ingress_rule.sdm_sg_ingress_rule.from_port == 5000,
+      aws_vpc_security_group_ingress_rule.sdm_sg_ingress_rule.to_port == 5000,
+      aws_vpc_security_group_ingress_rule.sdm_sg_ingress_rule.ip_protocol == "tcp",
+      aws_vpc_security_group_ingress_rule.sdm_sg_ingress_rule.cidr_ipv4 == "0.0.0.0/0",
+    ])
+    error_message = "Security group rules exists with correct rules"
+  }
+
+  assert {
+    condition = alltrue([
+      aws_security_group.sg.tags["Environment"] == "test",
+      aws_security_group.sg.tags["Owner"] == "terraform-test",
+      aws_security_group.sg.tags["Project"] == "sdm-template",
+      aws_security_group.sg.tags["Application"] == "strongdm",
+      aws_security_group.sg.tags["ManagedBy"] == "terraform"
+    ])
+    error_message = "Security group exists with correct tags"
+  }
+
+  
 }
