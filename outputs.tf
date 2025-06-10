@@ -17,3 +17,8 @@ output "sdm_account_ids" {
   description = "StrongDM account IDs"
   value       = data.sdm_account.api-key-queries.ids
 }
+
+output "s3_bucket_id" {
+  description = "S3 bucket ID"
+  value       = aws_s3_bucket.bucket.id
+}
