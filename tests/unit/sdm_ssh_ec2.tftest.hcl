@@ -57,6 +57,15 @@ run "validate_ec2_instance_created" {
   }
 }
 
+run "validate_ec2_instance_public_ip" {
+  command = apply
+
+  assert {
+    condition     = aws_instance.gateway_ec2.public_ip != null
+    error_message = "EC2 instance public ip output should exist"
+  }
+}
+
 
 
 run "validate_ec2_security_group_created" {
