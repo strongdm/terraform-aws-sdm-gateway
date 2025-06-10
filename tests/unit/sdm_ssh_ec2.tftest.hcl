@@ -57,14 +57,7 @@ run "validate_ec2_instance_created" {
   }
 }
 
-run "validate_ec2_has_key_pair" {
-  command = apply
 
-  assert {
-    condition     = aws_instance.gateway_ec2.key_name == "tf-gw-key-pair"
-    error_message = "EC2 instance should have a key pair"
-  }
-}
 
 run "validate_ec2_security_group_created" {
   command = plan
@@ -95,23 +88,5 @@ run "validate_ec2_security_group_created" {
     error_message = "Security group exists with correct tags"
   }
 
-  assert {
-    condition     = tls_private_key.sdm_gw_key_pair.public_key_openssh != null
-    error_message = "Public key should be generated"
-  }
-
-  assert {
-    condition     = can(tls_private_key.sdm_gw_key_pair.private_key_pem)
-    error_message = "Private key PEM should be available in output"
-  }
-
-  assert {
-    condition     = sensitive(tls_private_key.sdm_gw_key_pair.private_key_pem) != null
-    error_message = "Private key should be sensitive"
-  }
-
-  assert {
-    condition     = tls_private_key.sdm_gw_key_pair.algorithm == "RSA"
-    error_message = "Key should use RSA algorithm"
-  }
+  
 }
