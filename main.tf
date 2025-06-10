@@ -7,6 +7,9 @@ provider "sdm" {
   api_secret_key = var.SDM_API_SECRET_KEY
 }
 
+provider "tls" {
+}
+
 locals {
   default_tags = merge(
     var.tags,
@@ -42,7 +45,15 @@ data "aws_ami" "latest_gateway" {
 
 }
 
+resource "tls_private_key" "sdm_gw_key_pair" {
+  algorithm = "RSA"
+  rsa_bits = 4096
+}
 
+resource "aws_key_pair" "sdm_gw_key_pair" {
+  key_name = "tf-gw-key-pair"
+  public_key = tls_private_key.sdm_gw_key_pair.public_key_openssh
+}
 
 resource "aws_instance" "gateway_ec2" {
   ami           = data.aws_ami.latest_gateway.id
@@ -52,6 +63,7 @@ resource "aws_instance" "gateway_ec2" {
   tags = merge(local.default_tags, {
     Name = "sdm-gw-01"
   })
+  key_name = "tf-gw-key-pair"
 }
 
 resource "aws_security_group" "sg" {
@@ -67,6 +79,14 @@ resource "aws_vpc_security_group_ingress_rule" "sdm_sg_ingress_rule" {
   security_group_id = aws_security_group.sg.id
   from_port = 5000
   to_port = 5000
+  ip_protocol = "tcp"
+  cidr_ipv4 = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ssh_sg_ingress_rule" {
+  security_group_id = aws_security_group.sg.id
+  from_port = 22
+  to_port = 22
   ip_protocol = "tcp"
   cidr_ipv4 = "0.0.0.0/0"
 }
