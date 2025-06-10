@@ -93,3 +93,12 @@ resource "aws_vpc_security_group_ingress_rule" "sdm_sg_ingress_rule" {
   cidr_ipv4         = "0.0.0.0/0"
 }
 
+resource "sdm_node" "gw_ec2" {
+  gateway {
+    listen_address = aws_instance.gateway_ec2.public_ip
+    bind_address = "0.0.0.0"
+
+  }
+  
+}
+
