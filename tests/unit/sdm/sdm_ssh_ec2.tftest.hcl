@@ -43,4 +43,12 @@ run "validate_sdm_gateway_created" {
     condition     = sdm_node.gw_ec2.id != null
     error_message = "SDM Gateway should be created"
   }
+
+  assert {
+    condition = alltrue([
+      sdm_node.gw_ec2.gateway[0].listen_address != null,
+      sdm_node.gw_ec2.gateway[0].bind_address != null,
+    ])
+    error_message = "SDM Gateway should have a listen address and bind address"
+  }
 }

@@ -95,9 +95,9 @@ resource "aws_vpc_security_group_ingress_rule" "sdm_sg_ingress_rule" {
 
 resource "sdm_node" "gw_ec2" {
   gateway {
-    listen_address = aws_instance.gateway_ec2.public_ip
-    bind_address = "0.0.0.0"
-
+    listen_address = "${aws_instance.gateway_ec2.public_ip}:5000"
+    bind_address = "0.0.0.0:5000"
+    
   }
   
 }
