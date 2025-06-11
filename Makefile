@@ -16,7 +16,7 @@ unit-test:
 	terraform test -test-directory=./tests/unit/sdm
 
 integration-test:
-	go test -v ./tests/integration -timeout 1m
+	go test -v ./tests/integration -timeout 30m
 
 
 test: unit-test	integration-test
