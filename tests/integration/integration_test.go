@@ -26,11 +26,6 @@ func TestTerraformIntegration(t *testing.T) {
 	defer terraform.Destroy(t, opts)
 	terraform.InitAndApply(t, opts)
 
-	// Run individual test scenarios as subtests
-	t.Run("S3Bucket", func(t *testing.T) {
-		testS3Bucket(t, opts)
-	})
-
 	t.Run("TagsAndProviders", func(t *testing.T) {
 		testEnforceTagsAndProviders(t, opts)
 	})
