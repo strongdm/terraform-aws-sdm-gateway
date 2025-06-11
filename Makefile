@@ -12,7 +12,8 @@ fmt:
 	terraform fmt
 
 unit-test:
-	terraform test -test-directory=./tests/unit
+	terraform test -test-directory=./tests/unit/aws
+	terraform test -test-directory=./tests/unit/sdm
 
 integration-test:
 	go test -v ./tests/integration -timeout 1m

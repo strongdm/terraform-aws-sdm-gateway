@@ -36,11 +36,6 @@ func TestTerraformIntegration(t *testing.T) {
 	})
 }
 
-func testS3Bucket(t *testing.T, opts *terraform.Options) {
-	s3BucketId := terraform.Output(t, opts, "s3_bucket_id")
-	assert.Equal(t, "test-bucket-tf-generated", s3BucketId)
-}
-
 func testEnforceTagsAndProviders(t *testing.T, opts *terraform.Options) {
 	// Validate output
 	output := terraform.Output(t, opts, "default_tags")
