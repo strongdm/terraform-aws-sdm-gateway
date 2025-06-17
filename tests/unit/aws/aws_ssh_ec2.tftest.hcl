@@ -1,7 +1,8 @@
 variables {
-  aws_region = "us-east-1"
-  vpc_id     = "vpc-12345678"
-  subnet_id  = "subnet-12345678"
+  aws_region            = "us-east-1"
+  vpc_id                = "vpc-12345678"
+  subnet_id             = "subnet-12345678"
+  aws_security_group_id = "sg-1234567890"
   tags = {
     Environment = "test"
     Owner       = "terraform-test"
@@ -9,8 +10,8 @@ variables {
   }
   SDM_API_ACCESS_KEY = "test-access-key"
   SDM_API_SECRET_KEY = "test-secret-key"
-  SDM_ADMIN_TOKEN = "admin_token_test"
-  
+  SDM_ADMIN_TOKEN    = "admin_token_test"
+
 }
 
 mock_provider "aws" {
@@ -19,7 +20,7 @@ mock_provider "aws" {
       id = "vpc-12345678"
     }
   }
-  
+
   mock_data "aws_subnet" {
     defaults = {
       id = "subnet-12345678"
@@ -67,47 +68,6 @@ run "validate_ec2_instance_public_ip" {
 }
 
 
-
-run "validate_ec2_security_group_created" {
-  command = plan
-
-  assert {
-    condition     = aws_security_group.sg.name == "sdm-gw-sg-sdm"
-    error_message = "Security group should be created"
-  }
-
-  assert {
-    condition = alltrue([
-      aws_vpc_security_group_ingress_rule.sdm_sg_ingress_rule.from_port == 5000,
-      aws_vpc_security_group_ingress_rule.sdm_sg_ingress_rule.to_port == 5000,
-      aws_vpc_security_group_ingress_rule.sdm_sg_ingress_rule.ip_protocol == "tcp",
-      aws_vpc_security_group_ingress_rule.sdm_sg_ingress_rule.cidr_ipv4 == "0.0.0.0/0",
-    ])
-    error_message = "Security group rules exists with correct rules"
-  }
-
-  assert {
-    condition = alltrue([
-      aws_vpc_security_group_egress_rule.sdm_sg_egress_rule.from_port == -1,
-      aws_vpc_security_group_egress_rule.sdm_sg_egress_rule.to_port == -1,
-      aws_vpc_security_group_egress_rule.sdm_sg_egress_rule.ip_protocol == "-1",
-      aws_vpc_security_group_egress_rule.sdm_sg_egress_rule.cidr_ipv4 == "0.0.0.0/0",
-    ])
-    error_message = "Security group rules exists with correct rules"
-  }
-
-  assert {
-    condition = alltrue([
-      aws_security_group.sg.tags["Environment"] == "test",
-      aws_security_group.sg.tags["Owner"] == "terraform-test",
-      aws_security_group.sg.tags["Project"] == "sdm-template",
-      aws_security_group.sg.tags["Application"] == "strongdm",
-      aws_security_group.sg.tags["ManagedBy"] == "terraform"
-    ])
-    error_message = "Security group exists with correct tags"
-  }
-}
-
 run "user_data_contains_admin_token_variable" {
   command = plan
 
@@ -115,5 +75,5 @@ run "user_data_contains_admin_token_variable" {
     condition     = can(regex(".*admin_token_test.*", base64decode(aws_instance.gateway_ec2.user_data)))
     error_message = "User data should contain the admin token"
   }
-  
+
 }

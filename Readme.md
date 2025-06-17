@@ -24,7 +24,7 @@ Additional standard tags are automatically applied:
 ## Usage
 ```hcl
 module "strongdm_aws" {
-  source = "path/to/terraform-aws-template"
+  source = "strongdm/sdm-gateway"
   
   // Required parameters
   aws_region = "us-west-2"

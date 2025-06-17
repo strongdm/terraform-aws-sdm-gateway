@@ -1,0 +1,17 @@
+aws_region = "xxxxxxxxxx"
+subnet_id  = "subnet-xxxxxxxxxx"
+vpc_id     = "vpc-xxxxxxxxxx"
+
+# Map variable - use JSON object format
+tags = {
+  "Creator" : "xxxxxxxxxx",
+  "Createdby" : "xxxxxxxxxx",
+  "Environment" : "xxxxxxxxxx",
+  "Team" : "xxxxxxxxxx",
+  "Project" : "xxxxxxxxxx",
+  "Owner" : "xxxxxxxxxx"
+}
+SDM_ADMIN_TOKEN = "xxxxxxxxxx"
+
+gateway_instance_name_1 = "xxxxxxxxxx"
+gateway_instance_name_2 = "xxxxxxxxxx"

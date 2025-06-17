@@ -4,18 +4,9 @@ variable "aws_region" {
 }
 
 variable "tags" {
-  description = "Tags to apply to all resources. Required tags: Environment, Owner, Project"
+  description = "Tags to apply to all resources."
   type        = map(string)
   default     = {}
-
-  validation {
-    condition = alltrue([
-      contains(keys(var.tags), "Environment"),
-      contains(keys(var.tags), "Owner"),
-      contains(keys(var.tags), "Project")
-    ])
-    error_message = "Tags must include Environment, Owner, and Project keys for compliance."
-  }
 }
 
 variable "vpc_id" {
@@ -31,23 +22,13 @@ variable "subnet_id" {
 variable "SDM_API_ACCESS_KEY" {
   description = "The API access key for the StrongDM API"
   type        = string
+  sensitive   = true
 }
 
 variable "SDM_API_SECRET_KEY" {
   description = "The API secret key for the StrongDM API"
   type        = string
-}
-
-variable "instance_type" {
-  description = "The instance type for the gateway instance"
-  type        = string
-  default     = "t3.medium"
-}
-
-variable "gateway_instance_name" {
-  description = "The  name of the gateway instance"
-  type        = string
-  default     = "sdm-gw-01"
+  sensitive   = true
 }
 
 variable "SDM_ADMIN_TOKEN" {
@@ -56,7 +37,12 @@ variable "SDM_ADMIN_TOKEN" {
   sensitive   = true
 }
 
-variable "aws_security_group_id" {
-  description = "Security group for the SDM gateways"
+variable "gateway_instance_name_1" {
+  description = "The gateway instance name"
+  type        = string
+}
+
+variable "gateway_instance_name_2" {
+  description = "The second gateway instance name"
   type        = string
 }

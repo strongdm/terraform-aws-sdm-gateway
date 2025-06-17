@@ -13,12 +13,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TODO: Needs a refactoring, complex function.
 func TestTerraformIntegration(t *testing.T) {
-	opts := &terraform.Options{
-		TerraformDir: "../../", // Path to your Terraform code
+	// Step 1: Deploy prerequisites (security group)
+	prereqOpts := &terraform.Options{
+		TerraformDir: "./prerequisites",
 		Vars: map[string]interface{}{
 			"aws_region": os.Getenv("TF_VAR_aws_region"),
-			"subnet_id":  os.Getenv("TF_VAR_subnet_id"),
 			"vpc_id":     os.Getenv("TF_VAR_vpc_id"),
 		},
 		EnvVars: map[string]string{
@@ -26,7 +27,31 @@ func TestTerraformIntegration(t *testing.T) {
 		},
 	}
 
-	// Single deployment for all tests
+	// Deploy prerequisites first
+	defer terraform.Destroy(t, prereqOpts)
+	terraform.InitAndApply(t, prereqOpts)
+
+	// Get security group ID from prerequisites
+	securityGroupID := terraform.Output(t, prereqOpts, "security_group_id")
+
+	// Step 2: Deploy main module with prerequisites
+	opts := &terraform.Options{
+		TerraformDir: "../../", // Path to your Terraform code
+		Vars: map[string]interface{}{
+			"aws_region":            os.Getenv("TF_VAR_aws_region"),
+			"subnet_id":             os.Getenv("TF_VAR_subnet_id"),
+			"vpc_id":                os.Getenv("TF_VAR_vpc_id"),
+			"aws_security_group_id": securityGroupID,
+			"SDM_API_ACCESS_KEY":    os.Getenv("TF_VAR_SDM_API_ACCESS_KEY"),
+			"SDM_API_SECRET_KEY":    os.Getenv("TF_VAR_SDM_API_SECRET_KEY"),
+			"SDM_ADMIN_TOKEN":       os.Getenv("TF_VAR_SDM_ADMIN_TOKEN"),
+		},
+		EnvVars: map[string]string{
+			"TF_VAR_tags": os.Getenv("TF_VAR_tags"),
+		},
+	}
+
+	// Deploy main module
 	defer terraform.Destroy(t, opts)
 	terraform.InitAndApply(t, opts)
 
@@ -63,7 +88,7 @@ func testSDMGatewayIsOnline(t *testing.T, opts *terraform.Options) {
 		}
 
 		if i < maxRetries-1 {
-			t.Logf("Attempt %d/%d: Gateway not online yet, retrying in %v...", i+1, maxRetries, retryInterval)
+			t.Logf("Attempt %d/%d: Gateway %s not online yet, retrying in %v...", i+1, maxRetries, retryInterval, gatewayIP)
 			time.Sleep(retryInterval)
 		}
 	}

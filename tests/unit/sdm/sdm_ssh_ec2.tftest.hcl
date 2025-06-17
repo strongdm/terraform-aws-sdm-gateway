@@ -9,9 +9,9 @@ variables {
   }
   SDM_API_ACCESS_KEY = "test-access-key"
   SDM_API_SECRET_KEY = "test-secret-key"
-  SDM_ADMIN_TOKEN = "admin_token_test"
+  SDM_ADMIN_TOKEN    = "admin_token_test"
 
-  
+
 }
 
 mock_provider "aws" {
@@ -20,7 +20,7 @@ mock_provider "aws" {
       id = "vpc-12345678"
     }
   }
-  
+
   mock_data "aws_subnet" {
     defaults = {
       id = "subnet-12345678"

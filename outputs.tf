@@ -27,3 +27,9 @@ output "ec2_instance_public_dns" {
   description = "EC2 instance public DNS"
   value       = aws_instance.gateway_ec2.public_dns
 }
+
+output "gateway_instance_name" {
+  description = "Name of the StrongDM gateway instance"
+  value       = aws_instance.gateway_ec2.tags["Name"]
+
+}
