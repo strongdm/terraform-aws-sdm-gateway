@@ -50,6 +50,19 @@ module "strongdm_aws" {
 ## Inputs, Outputs, and Resources
 See the respective documentation files for details.
 
+## Example Deployment
+
+A complete example deployment is provided in the [`example/`](./example/) directory. This includes:
+- Example `main.tf` showing how to use the module with two gateway instances
+- Example `variables.tf` and `terraform.tfvars.example` for required variables
+- Example `outputs.tf` to expose useful outputs
+
+To try the example:
+1. Copy `example/terraform.tfvars.example` to `example/terraform.tfvars` and fill in your values.
+2. Run `terraform init` and `terraform apply` inside the `example/` directory.
+
+Refer to the files in `example/` for a practical usage reference.
+
 ## Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for detailed information about:
