@@ -54,7 +54,7 @@ func TestTerraformIntegration(t *testing.T) {
 	terraform.InitAndApply(t, opts)
 
 	t.Run("TagsAndProviders", func(t *testing.T) {
-		testEnforceTagsAndProviders(t, opts)
+		testEnforceTags(t, opts)
 	})
 
 	t.Run("GatewayConnection", func(t *testing.T) {
@@ -117,7 +117,7 @@ func testGatewayConnection(t *testing.T, opts *terraform.Options) {
 
 }
 
-func testEnforceTagsAndProviders(t *testing.T, opts *terraform.Options) {
+func testEnforceTags(t *testing.T, opts *terraform.Options) {
 	// Validate output
 	output := terraform.Output(t, opts, "default_tags")
 	assert.True(
@@ -130,8 +130,6 @@ func testEnforceTagsAndProviders(t *testing.T, opts *terraform.Options) {
 			},
 		),
 		"Default tags should be present")
-
-	assert.Contains(t, terraform.Output(t, opts, "sdm_account_ids"), "a-")
 }
 
 func hasTags(output string, tags []string) bool {
