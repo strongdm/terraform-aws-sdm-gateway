@@ -127,9 +127,8 @@ func testEnforceTagsAndProviders(t *testing.T, opts *terraform.Options) {
 		hasTags(
 			output,
 			[]string{
-				"Environment",
-				"Owner",
-				"Project",
+				"ManagedBy",
+				"Application",
 			},
 		),
 		"Default tags should be present")

@@ -15,7 +15,7 @@ locals {
       Application = "strongdm"
     }
   )
-  user_data = templatefile("${path.module}/user_data.sh", {
+  user_data = templatefile("${path.module}/scripts/user_data.sh", {
     ADMIN_TOKEN = var.SDM_ADMIN_TOKEN
   })
 }

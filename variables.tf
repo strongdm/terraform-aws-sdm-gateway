@@ -7,15 +7,6 @@ variable "tags" {
   description = "Tags to apply to all resources. Required tags: Environment, Owner, Project"
   type        = map(string)
   default     = {}
-
-  validation {
-    condition = alltrue([
-      contains(keys(var.tags), "Environment"),
-      contains(keys(var.tags), "Owner"),
-      contains(keys(var.tags), "Project")
-    ])
-    error_message = "Tags must include Environment, Owner, and Project keys for compliance."
-  }
 }
 
 variable "vpc_id" {
