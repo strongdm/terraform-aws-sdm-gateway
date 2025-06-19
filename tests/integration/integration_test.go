@@ -42,8 +42,6 @@ func TestTerraformIntegration(t *testing.T) {
 			"subnet_id":             os.Getenv("TF_VAR_subnet_id"),
 			"vpc_id":                os.Getenv("TF_VAR_vpc_id"),
 			"aws_security_group_id": securityGroupID,
-			"SDM_API_ACCESS_KEY":    os.Getenv("TF_VAR_SDM_API_ACCESS_KEY"),
-			"SDM_API_SECRET_KEY":    os.Getenv("TF_VAR_SDM_API_SECRET_KEY"),
 			"SDM_ADMIN_TOKEN":       os.Getenv("TF_VAR_SDM_ADMIN_TOKEN"),
 		},
 		EnvVars: map[string]string{

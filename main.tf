@@ -28,11 +28,6 @@ data "aws_subnet" "subnet" {
   id = var.subnet_id
 }
 
-data "sdm_account" "api-key-queries" {
-  type = "api"
-  name = "*github*"
-}
-
 data "aws_ami" "latest_gateway" {
   most_recent = true
 

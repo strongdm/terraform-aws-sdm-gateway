@@ -13,11 +13,6 @@ output "default_tags" {
   value       = local.default_tags
 }
 
-output "sdm_account_ids" {
-  description = "StrongDM account IDs"
-  value       = data.sdm_account.api-key-queries.ids
-}
-
 output "ec2_instance_public_ip" {
   description = "EC2 instance public IP"
   value       = aws_instance.gateway_ec2.public_ip
