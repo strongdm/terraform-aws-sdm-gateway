@@ -4,7 +4,7 @@ variable "aws_region" {
 }
 
 variable "tags" {
-  description = "Tags to apply to all resources. Required tags: Environment, Owner, Project"
+  description = "Optional tags to apply to all resources. These will be merged with automatic tags (ManagedBy, Application, Name)"
   type        = map(string)
   default     = {}
 }

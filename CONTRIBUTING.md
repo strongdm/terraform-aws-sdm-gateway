@@ -105,10 +105,16 @@ terraform test -test-directory ./tests/unit
 - Use table-driven tests when appropriate
 
 #### Required Tags
-All AWS resources must include these tags:
+All AWS resources automatically receive these tags:
+- `ManagedBy`: "terraform"
+- `Application`: "strongdm" 
+- `Name`: Resource identifier
+
+You can optionally add custom tags using the `tags` variable. Recommended tags include:
 - `Environment`: Production, Staging, Development, etc.
 - `Owner`: Team or individual responsible
 - `Project`: Project or application name
+- `CostCenter`: For cost allocation
 
 ## Getting Help
 

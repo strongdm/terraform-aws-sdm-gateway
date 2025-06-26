@@ -1,0 +1,22 @@
+# Example terraform.tfvars for terraform-aws-sdm-gateway
+
+aws_region = "us-west-2"
+vpc_id     = "vpc-xxxxxxxx"
+subnet_id  = "subnet-xxxxxxxx"
+
+# Map variable - use JSON object format
+tags = {
+  Environment = "Development"
+  Owner       = "your-team"
+  Project     = "strongdm-demo"
+  Creator     = "your-name"
+  Createdby   = "your-email@example.com"
+  Team        = "devops"
+}
+
+SDM_API_ACCESS_KEY = "your-sdm-api-access-key"
+SDM_API_SECRET_KEY = "your-sdm-api-secret-key"
+SDM_ADMIN_TOKEN    = "your-sdm-admin-token"
+
+gateway_instance_name_1 = "sdm-gateway-1"
+gateway_instance_name_2 = "sdm-gateway-2"
