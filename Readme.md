@@ -1,4 +1,4 @@
-# StrongDM AWS Terraform Module Template
+# StrongDM AWS Terraform Gateway Module
 
 This template provides a foundation for creating AWS-based StrongDM deployments using Terraform.
 

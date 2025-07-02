@@ -68,14 +68,12 @@ make all-static
 #### Testing
 Run the full test suite:
 ```bash
+# Just the unit tests
+make unit-test
+# Just the integration/e2e tests
+make integration-test
 # Standard run
-go test -v ./tests/integration
-
-# With direnv (if using environment variable injection)
-direnv exec . go test -v ./tests/integration
-
-# Terraform test
-terraform test -test-directory ./tests/unit
+make all-test
 ```
 
 ### Pull Request Process
@@ -99,7 +97,7 @@ terraform test -test-directory ./tests/unit
 - Tag all resources appropriately
 
 #### Go (Tests)
-- Follow standard Go formatting (`go fmt`)
+- Follow standard Go formatting (`go fmt`, `make all-static` {includes go fmt and other steps})
 - Write descriptive test names
 - Include proper error handling
 - Use table-driven tests when appropriate
