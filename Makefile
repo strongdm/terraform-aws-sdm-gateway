@@ -15,7 +15,7 @@ unit-test:
 	terraform test -test-directory=./tests/unit/aws
 
 integration-test:
-	go test -v ./tests/integration -timeout 30m
+	go test -v ./tests/integration -timeout 30m -count=1
 
 
 test: unit-test	integration-test

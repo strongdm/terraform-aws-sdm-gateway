@@ -9,9 +9,18 @@ apt install -y unzip awscli jq
 # Fetch the StrongDM admin token from AWS Secrets Manager
 ADMIN_TOKEN_KEY=${ADMIN_TOKEN_SECRET_KEY}
 ADMIN_TOKEN=$(aws secretsmanager get-secret-value --secret-id "${ADMIN_TOKEN_SECRET_NAME}" --region "${AWS_REGION}" --query SecretString --output text  | jq -r .$ADMIN_TOKEN_KEY)
+export SDM_APP_DOMAIN=${SDM_APP_DOMAIN}
+export SDM_NODE_NAME=${SDM_NODE_NAME}
+export SDM_USE_INSTANCE_NAME=${SDM_USE_INSTANCE_NAME}
+echo "SDM_NODE_NAME is: $SDM_NODE_NAME" >> /var/log/sdm-userdata.log
+echo "SDM_APP_DOMAIN is: $SDM_APP_DOMAIN" >> /var/log/sdm-userdata.log
+echo "SDM_USE_INSTANCE_NAME is: $SDM_USE_INSTANCE_NAME" >> /var/log/sdm-userdata.log
 
 # Set the StrongDM admin token variable in a way that systemctl can use it
 systemctl set-environment SDM_ADMIN_TOKEN=$ADMIN_TOKEN
+systemctl set-environment SDM_APP_DOMAIN=$SDM_APP_DOMAIN
+systemctl set-environment SDM_NODE_NAME=$SDM_NODE_NAME
+systemctl set-environment SDM_USE_INSTANCE_NAME=$SDM_USE_INSTANCE_NAME
 
 # Restart the StrongDM gateway setup script (the script included with the StrongDM Gateway AMI)
 systemctl restart sdm-relay-setup

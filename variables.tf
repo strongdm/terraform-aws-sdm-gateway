@@ -1,41 +1,18 @@
-variable "aws_region" {
-  description = "The AWS region to deploy resources to"
+variable "aws_iam_instance_profile" {
+  description = "The name of the IAM instance profile to attach to the EC2 instance."
   type        = string
+  default     = ""
 }
 
-variable "tags" {
-  description = "Optional tags to apply to all resources. These will be merged with automatic tags (ManagedBy, Application, Name)"
-  type        = map(string)
-  default     = {}
-}
-
-variable "vpc_id" {
-  description = "The VPC ID where the gateway instance will be deployed"
-  type        = string
-}
-
-variable "subnet_id" {
-  description = "The subnet ID where the gateway instance will be deployed"
-  type        = string
-}
-
-variable "instance_type" {
+variable "aws_instance_type" {
   description = "The instance type for the gateway instance"
   type        = string
   default     = "t3.medium"
 }
 
-variable "gateway_instance_name" {
-  description = "The  name of the gateway instance"
+variable "aws_region" {
+  description = "The AWS region to deploy resources to"
   type        = string
-  default     = "sdm-gw-01"
-}
-
-variable "SDM_ADMIN_TOKEN" {
-  description = "The StrongDM admin token"
-  type        = string
-  sensitive   = true
-  default     = ""
 }
 
 variable "aws_security_group_id" {
@@ -43,20 +20,52 @@ variable "aws_security_group_id" {
   type        = string
 }
 
-variable "sdm_admin_token_secret_name" {
-  description = "The name of the AWS Secrets Manager secret to store the SDM admin token."
+variable "aws_subnet_id" {
+  description = "The subnet ID where the gateway instance will be deployed"
   type        = string
-  default     = "sdm_admin_token"
+}
+
+variable "aws_tags" {
+  description = "Optional tags to apply to all resources. These will be merged with automatic tags (ManagedBy, Application, Name)"
+  type        = map(string)
+  default     = {}
+}
+
+variable "aws_vpc_id" {
+  description = "The VPC ID where the gateway instance will be deployed"
+  type        = string
 }
 
 variable "sdm_admin_token_secret_key" {
   description = "The key name in the AWS Secrets Manager secret for the SDM admin token."
   type        = string
-  default     = "admin_token"
 }
 
-variable "iam_instance_profile" {
-  description = "The name of the IAM instance profile to attach to the EC2 instance."
+variable "sdm_admin_token_secret_name" {
+  description = "The name of the AWS Secrets Manager secret to store the SDM admin token."
+  type        = string
+}
+
+variable "sdm_app_domain" {
+  description = "The StrongDM control plane domain the gateway connects to"
+  type        = string
+  default     = "app.strongdm.com"
+}
+
+variable "sdm_gateway_instance_name" {
+  description = "The name of the gateway instance"
   type        = string
   default     = ""
+}
+
+variable "sdm_node_name" {
+  description = "The StrongDM node name to register the gateway with"
+  type        = string
+  default     = ""
+}
+
+variable "sdm_use_instance_name" {
+  description = "Use the instance name as the StrongDM node name"
+  type        = bool
+  default     = false
 }
