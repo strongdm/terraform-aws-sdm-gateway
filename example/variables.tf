@@ -19,18 +19,6 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "SDM_API_ACCESS_KEY" {
-  description = "The API access key for the StrongDM API"
-  type        = string
-  sensitive   = true
-}
-
-variable "SDM_API_SECRET_KEY" {
-  description = "The API secret key for the StrongDM API"
-  type        = string
-  sensitive   = true
-}
-
 variable "SDM_ADMIN_TOKEN" {
   description = "The StrongDM admin token"
   type        = string
@@ -45,4 +33,15 @@ variable "gateway_instance_name_1" {
 variable "gateway_instance_name_2" {
   description = "The second gateway instance name"
   type        = string
+}
+
+variable "sdm_admin_token_secret_name" {
+  description = "The name of the AWS Secrets Manager secret to store the SDM admin token."
+  type        = string
+}
+
+variable "sdm_admin_token_secret_key" {
+  description = "The key name in the AWS Secrets Manager secret for the SDM admin token."
+  type        = string
+  default     = "admin_token"
 }
