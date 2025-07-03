@@ -35,9 +35,28 @@ variable "SDM_ADMIN_TOKEN" {
   description = "The StrongDM admin token"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "aws_security_group_id" {
   description = "Security group for the SDM gateways"
   type        = string
+}
+
+variable "sdm_admin_token_secret_name" {
+  description = "The name of the AWS Secrets Manager secret to store the SDM admin token."
+  type        = string
+  default     = "sdm_admin_token"
+}
+
+variable "sdm_admin_token_secret_key" {
+  description = "The key name in the AWS Secrets Manager secret for the SDM admin token."
+  type        = string
+  default     = "admin_token"
+}
+
+variable "iam_instance_profile" {
+  description = "The name of the IAM instance profile to attach to the EC2 instance."
+  type        = string
+  default     = ""
 }

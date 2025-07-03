@@ -6,11 +6,12 @@ apt update -y
 # Install required helper apps
 apt install -y unzip awscli jq
 
-# The ADMIN_TOKEN is passed in from Terraform templatefile function
-# No need to fetch from Secrets Manager
+# Fetch the StrongDM admin token from AWS Secrets Manager
+ADMIN_TOKEN_KEY=${ADMIN_TOKEN_SECRET_KEY}
+ADMIN_TOKEN=$(aws secretsmanager get-secret-value --secret-id "${ADMIN_TOKEN_SECRET_NAME}" --region "${AWS_REGION}" --query SecretString --output text  | jq -r .$ADMIN_TOKEN_KEY)
 
 # Set the StrongDM admin token variable in a way that systemctl can use it
-systemctl set-environment SDM_ADMIN_TOKEN="${ADMIN_TOKEN}"
+systemctl set-environment SDM_ADMIN_TOKEN=$ADMIN_TOKEN
 
 # Restart the StrongDM gateway setup script (the script included with the StrongDM Gateway AMI)
 systemctl restart sdm-relay-setup

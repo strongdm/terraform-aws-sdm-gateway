@@ -2,11 +2,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-provider "sdm" {
-  api_access_key = var.SDM_API_ACCESS_KEY
-  api_secret_key = var.SDM_API_SECRET_KEY
-}
-
 locals {
   default_tags = merge(
     var.tags,
@@ -16,7 +11,9 @@ locals {
     }
   )
   user_data = templatefile("${path.module}/scripts/user_data.sh", {
-    ADMIN_TOKEN = var.SDM_ADMIN_TOKEN
+    ADMIN_TOKEN_SECRET_NAME = var.sdm_admin_token_secret_name,
+    AWS_REGION = var.aws_region,
+    ADMIN_TOKEN_SECRET_KEY = var.sdm_admin_token_secret_key
   })
 }
 
@@ -58,6 +55,7 @@ resource "aws_instance" "gateway_ec2" {
   root_block_device {
     encrypted = true
   }
-}
 
+  iam_instance_profile = var.iam_instance_profile != "" ? var.iam_instance_profile : null
+}
 
