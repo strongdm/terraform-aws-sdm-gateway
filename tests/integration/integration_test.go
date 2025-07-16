@@ -19,8 +19,9 @@ func TestTerraformIntegration(t *testing.T) {
 	prereqOpts := &terraform.Options{
 		TerraformDir: "./prerequisites",
 		Vars: map[string]interface{}{
-			"aws_region": os.Getenv("TF_VAR_aws_region"),
-			"vpc_id":     os.Getenv("TF_VAR_vpc_id"),
+			"aws_region":      os.Getenv("TF_VAR_aws_region"),
+			"vpc_id":          os.Getenv("TF_VAR_vpc_id"),
+			"SDM_ADMIN_TOKEN": os.Getenv("TF_VAR_SDM_ADMIN_TOKEN"),
 		},
 		EnvVars: map[string]string{
 			"TF_VAR_tags": os.Getenv("TF_VAR_tags"),
@@ -34,15 +35,21 @@ func TestTerraformIntegration(t *testing.T) {
 	// Get security group ID from prerequisites
 	securityGroupID := terraform.Output(t, prereqOpts, "security_group_id")
 
+	// Get secret name from prerequisites
+	secretName := terraform.Output(t, prereqOpts, "secret_name")
+
 	// Step 2: Deploy main module with prerequisites
 	opts := &terraform.Options{
 		TerraformDir: "../../", // Path to your Terraform code
 		Vars: map[string]interface{}{
-			"aws_region":            os.Getenv("TF_VAR_aws_region"),
-			"subnet_id":             os.Getenv("TF_VAR_subnet_id"),
-			"vpc_id":                os.Getenv("TF_VAR_vpc_id"),
-			"aws_security_group_id": securityGroupID,
-			"SDM_ADMIN_TOKEN":       os.Getenv("TF_VAR_SDM_ADMIN_TOKEN"),
+			"aws_region":                  os.Getenv("TF_VAR_aws_region"),
+			"aws_subnet_id":               os.Getenv("TF_VAR_subnet_id"),
+			"aws_vpc_id":                  os.Getenv("TF_VAR_vpc_id"),
+			"aws_security_group_id":       securityGroupID,
+			"sdm_admin_token_secret_name": secretName,
+			"sdm_admin_token_secret_key":  "admin_token",
+			"sdm_gateway_instance_name":   "sdm-gw-integration-test",
+			"aws_iam_instance_profile":    terraform.Output(t, prereqOpts, "iam_instance_profile_name"),
 		},
 		EnvVars: map[string]string{
 			"TF_VAR_tags": os.Getenv("TF_VAR_tags"),
@@ -63,6 +70,10 @@ func TestTerraformIntegration(t *testing.T) {
 
 	t.Run("SDMGatewayIsOnline", func(t *testing.T) {
 		testSDMGatewayIsOnline(t, opts)
+	})
+
+	t.Run("IAMPermissions", func(t *testing.T) {
+		testIAMPermissions(t, prereqOpts)
 	})
 }
 
@@ -139,4 +150,27 @@ func hasTags(output string, tags []string) bool {
 		}
 	}
 	return true
+}
+
+func testIAMPermissions(t *testing.T, prereqOpts *terraform.Options) {
+	// Get IAM role name from prerequisites
+	roleName := terraform.Output(t, prereqOpts, "iam_role_name")
+
+	// Use AWS CLI to check if role can access the secret (simulate the permission)
+	secretName := terraform.Output(t, prereqOpts, "secret_name")
+	region := os.Getenv("TF_VAR_aws_region")
+
+	// Test that IAM role policy exists and allows secretsmanager:GetSecretValue
+	cmd := exec.Command("aws", "iam", "list-role-policies", "--role-name", roleName, "--region", region)
+	output, err := cmd.CombinedOutput()
+
+	assert.NoError(t, err, "Should be able to list IAM role policies")
+	assert.Contains(t, string(output), "allow-get-secret", "IAM role should have the secrets manager policy attached")
+
+	// Test that the secret exists and is accessible
+	cmd = exec.Command("aws", "secretsmanager", "describe-secret", "--secret-id", secretName, "--region", region)
+	output, err = cmd.CombinedOutput()
+
+	assert.NoError(t, err, "Secret should exist and be accessible")
+	assert.Contains(t, string(output), secretName, "Secret description should contain the secret name")
 }
