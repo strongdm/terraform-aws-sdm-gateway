@@ -36,6 +36,8 @@ resource "aws_vpc_security_group_egress_rule" "sdm_sg_egress_rule" {
 
 resource "aws_secretsmanager_secret" "sdm_admin_token" {
   name = var.sdm_admin_token_secret_name
+  force_overwrite_replica_secret = true
+  recovery_window_in_days = 0
 }
 
 resource "aws_secretsmanager_secret_version" "sdm_admin_token_version" {
@@ -122,28 +124,34 @@ resource "aws_iam_role_policy" "allow_get_secret" {
 module "sdm_gateway_1" {
   # source                = "git::https://github.com/strongdm/terraform-aws-sdm-gateway.git"
   source                      = "../"
+  aws_iam_instance_profile    = aws_iam_instance_profile.ssm_profile.name
   aws_region                  = var.aws_region
-  vpc_id                      = var.vpc_id
-  subnet_id                   = var.subnet_id
-  sdm_admin_token_secret_name = aws_secretsmanager_secret.sdm_admin_token.name
-  tags                        = var.tags
-  gateway_instance_name       = var.gateway_instance_name_1
   aws_security_group_id       = aws_security_group.sg.id
+  aws_subnet_id               = var.subnet_id
+  aws_tags                    = var.tags
+  aws_vpc_id                  = var.vpc_id
   sdm_admin_token_secret_key  = var.sdm_admin_token_secret_key
-  iam_instance_profile        = aws_iam_instance_profile.ssm_profile.name
+  sdm_admin_token_secret_name = aws_secretsmanager_secret.sdm_admin_token.name
+  sdm_app_domain              = var.sdm_app_domain
+  sdm_gateway_instance_name   = var.gateway_instance_name_1
+  sdm_node_name               = var.sdm_node_name
 }
 
 
 module "sdm_gateway_2" {
   # source                = "git::https://github.com/strongdm/terraform-aws-sdm-gateway.git"
   source                      = "../"
+  aws_iam_instance_profile    = aws_iam_instance_profile.ssm_profile.name
   aws_region                  = var.aws_region
-  vpc_id                      = var.vpc_id
-  subnet_id                   = var.subnet_id
-  sdm_admin_token_secret_name = aws_secretsmanager_secret.sdm_admin_token.name
-  tags                        = var.tags
-  gateway_instance_name       = var.gateway_instance_name_2
   aws_security_group_id       = aws_security_group.sg.id
+  aws_subnet_id               = var.subnet_id
+  aws_tags                    = var.tags
+  aws_vpc_id                  = var.vpc_id
   sdm_admin_token_secret_key  = var.sdm_admin_token_secret_key
-  iam_instance_profile        = aws_iam_instance_profile.ssm_profile.name
+  sdm_admin_token_secret_name = aws_secretsmanager_secret.sdm_admin_token.name
+  sdm_app_domain              = var.sdm_app_domain
+  sdm_gateway_instance_name   = var.gateway_instance_name_2
+  sdm_node_name               = var.sdm_node_name
+  # Uses the instance name as the StrongDM node name
+  sdm_use_instance_name       = true
 }
