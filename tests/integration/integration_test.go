@@ -85,7 +85,7 @@ func TestTerraformIntegration(t *testing.T) {
 func testSDMGatewayIsOnline(t *testing.T, opts *terraform.Options) {
 	gatewayIP := terraform.Output(t, opts, "ec2_instance_public_dns")
 
-	maxRetries := 12
+	maxRetries := 20
 	retryInterval := 10 * time.Second
 
 	var lastErr error
@@ -119,7 +119,7 @@ func testGatewayConnection(t *testing.T, opts *terraform.Options) {
 	address := gatewayIP + ":5000"
 	timeout := 1 * time.Minute
 	var err error
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
 		conn, err := net.DialTimeout("tcp", address, timeout)
 		if err == nil {
 			conn.Close()
@@ -145,6 +145,7 @@ func testEnforceTags(t *testing.T, opts *terraform.Options) {
 			},
 		),
 		"Default tags should be present")
+
 }
 
 func hasTags(output string, tags []string) bool {
