@@ -104,7 +104,7 @@ func testGatewayConnection(t *testing.T, opts *terraform.Options) {
 	address := gatewayIP + ":5000"
 	timeout := 1 * time.Minute
 	var err error
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
 		conn, err := net.DialTimeout("tcp", address, timeout)
 		if err == nil {
 			conn.Close()
