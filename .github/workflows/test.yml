@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main, master ]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terratest:
     name: Run Terratest
@@ -45,20 +49,47 @@ jobs:
       with:
         terraform_version: ~1.12
 
-    - name: Configure AWS credentials
+    - name: Run Terraform unit tests
+      run: |
+        terraform init
+        make unit-test
+      env:
+        AWS_ACCESS_KEY_ID: fake
+        AWS_SECRET_ACCESS_KEY: fake
+        AWS_DEFAULT_REGION: us-west-2
+
+    - name: Configure AWS credentials for prerequisites
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.TF_VAR_AWS_REGION }}
 
-    - name: Run Terraform unit tests
+    - name: Deploy Prerequisites and Get Role ARN
+      id: prereqs
       run: |
+        cd tests/integration/prerequisites
         terraform init
-        make unit-test
+        terraform apply -auto-approve
+        echo "role-arn=$(terraform output -raw github_actions_role_arn)" >> $GITHUB_OUTPUT
+    - name: Configure AWS credentials with assumed role
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ steps.prereqs.outputs.role-arn }}
+        role-session-name: integration-test-session
+        aws-region: ${{ secrets.TF_VAR_AWS_REGION }}
 
     - name: Download Go modules
       run: go mod download
 
     - name: Run Terratest integration tests
       run: make integration-test
+
+    - name: Cleanup Prerequisites (if tests fail)
+      if: failure()
+      run: |
+        cd tests/integration/prerequisites
+        terraform destroy -auto-approve
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

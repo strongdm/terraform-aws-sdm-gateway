@@ -5,21 +5,38 @@ This template provides a foundation for creating AWS-based StrongDM deployments 
 ## Standards & Requirements
 
 ### Tagging Standards
-All resources should include these tags:
-- `Environment`: Production, Staging, Development, etc.
-- `Owner`: Team or individual responsible for the resource
-- `Project`: Project or application name
-
-Additional standard tags are automatically applied:
-- `Name`: Resource identifier
+You can optionally provide tags to be applied to all resources. The module automatically adds these standard tags:
 - `ManagedBy`: "terraform"
 - `Application`: "strongdm"
+- `Name`: Resource identifier (from gateway_instance_name)
 
+To add your own tags, use the `tags` variable:
+
+```hcl
+module "strongdm_aws" {
+  source = "strongdm/sdm-gateway"
+  
+  // Required parameters
+  aws_region = "us-west-2"
+  name       = "aws-production-gateway"
+  vpc_id     = "vpc-xxxxxxxx"
+  subnet_id  = "subnet-xxxxxxxx"
+  
+  // Optional: Custom tags
+  tags = {
+    Environment = "Production"
+    Owner       = "platform-team"
+    Project     = "strongdm-infrastructure"
+    CostCenter  = "IT-123"
+  }
+}
+```
 
 ## Features
 - AWS-specific resource provisioning for StrongDM gateways
 - Standardized module structure for consistency
-- Enforced tagging
+- Automatic tagging with standard metadata
+- Support for custom tags
 
 ## Usage
 ```hcl
