@@ -35,12 +35,6 @@ variable "sdm_app_domain" {
   default     = "app.strongdm.com"
 }
 
-variable "sdm_node_mode" {
-  description = "The StrongDM node mode for the gateway instance set to relay for a relay node"
-  type        = string
-  default     = ""
-}
-
 variable "sdm_node_name" {
   description = "The StrongDM node name to register the gateway with"
   type        = string
