@@ -58,6 +58,13 @@ jobs:
         AWS_SECRET_ACCESS_KEY: fake
         AWS_DEFAULT_REGION: us-west-2
 
+    - name: Configure AWS credentials for prerequisites
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.TF_VAR_AWS_REGION }}
+
     - name: Deploy Prerequisites and Get Role ARN
       id: prereqs
       run: |
@@ -65,7 +72,6 @@ jobs:
         terraform init
         terraform apply -auto-approve
         echo "role-arn=$(terraform output -raw github_actions_role_arn)" >> $GITHUB_OUTPUT
-
     - name: Configure AWS credentials with assumed role
       uses: aws-actions/configure-aws-credentials@v4
       with:
