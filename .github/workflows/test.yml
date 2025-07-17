@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main, master ]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terratest:
     name: Run Terratest
@@ -44,13 +48,6 @@ jobs:
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: ~1.12
-
-    - name: Configure AWS credentials (initial)
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.TF_VAR_AWS_REGION }}
 
     - name: Run Terraform unit tests
       run: |
