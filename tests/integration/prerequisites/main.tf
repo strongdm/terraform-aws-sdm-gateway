@@ -210,7 +210,6 @@ resource "aws_iam_role_policy" "github_actions_permissions" {
           "iam:ListAttachedRolePolicies",
           "iam:ListInstanceProfilesForRole",
           "iam:ListRolePolicies",
-          "iam:PassRole",
           "iam:PutRolePolicy",
           "iam:AddRoleToInstanceProfile",
           "iam:RemoveRoleFromInstanceProfile",
@@ -220,6 +219,20 @@ resource "aws_iam_role_policy" "github_actions_permissions" {
           "iam:UntagRole"
         ],
         Resource = "*"
+      },
+      {
+        Sid    = "PassRolePermissions",
+        Effect = "Allow",
+        Action = ["iam:PassRole"],
+        Resource = [
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sdm-gateway-*",
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*integration-test*"
+        ],
+        Condition = {
+          StringEquals = {
+            "iam:PassedToService" = "ec2.amazonaws.com"
+          }
+        }
       },
       {
         Sid    = "STSPermissions",
