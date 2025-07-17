@@ -225,7 +225,7 @@ resource "aws_iam_role_policy" "github_actions_permissions" {
         Effect = "Allow",
         Action = ["iam:PassRole"],
         Resource = [
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sdm-gateway-*",
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sdm-gateway-ssm-role-integration-test-*",
           "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*integration-test*"
         ],
         Condition = {
