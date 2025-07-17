@@ -53,6 +53,10 @@ jobs:
       run: |
         terraform init
         make unit-test
+      env:
+        AWS_ACCESS_KEY_ID: fake
+        AWS_SECRET_ACCESS_KEY: fake
+        AWS_DEFAULT_REGION: us-west-2
 
     - name: Deploy Prerequisites and Get Role ARN
       id: prereqs
