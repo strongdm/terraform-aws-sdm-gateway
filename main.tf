@@ -2,11 +2,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-provider "sdm" {
-  api_access_key = var.SDM_API_ACCESS_KEY
-  api_secret_key = var.SDM_API_SECRET_KEY
-}
-
 locals {
   default_tags = merge(
     var.tags,
