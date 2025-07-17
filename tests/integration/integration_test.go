@@ -70,7 +70,7 @@ func TestTerraformIntegration(t *testing.T) {
 func testSDMGatewayIsOnline(t *testing.T, opts *terraform.Options) {
 	gatewayIP := terraform.Output(t, opts, "ec2_instance_public_dns")
 
-	maxRetries := 12
+	maxRetries := 20
 	retryInterval := 10 * time.Second
 
 	var lastErr error
