@@ -45,7 +45,7 @@ jobs:
       with:
         terraform_version: ~1.12
 
-    - name: Configure AWS credentials
+    - name: Configure AWS credentials (initial)
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -57,8 +57,32 @@ jobs:
         terraform init
         make unit-test
 
+    - name: Deploy Prerequisites and Get Role ARN
+      id: prereqs
+      run: |
+        cd tests/integration/prerequisites
+        terraform init
+        terraform apply -auto-approve
+        echo "role-arn=$(terraform output -raw github_actions_role_arn)" >> $GITHUB_OUTPUT
+
+    - name: Configure AWS credentials with assumed role
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ steps.prereqs.outputs.role-arn }}
+        role-session-name: integration-test-session
+        aws-region: ${{ secrets.TF_VAR_AWS_REGION }}
+
     - name: Download Go modules
       run: go mod download
 
     - name: Run Terratest integration tests
       run: make integration-test
+
+    - name: Cleanup Prerequisites (if tests fail)
+      if: failure()
+      run: |
+        cd tests/integration/prerequisites
+        terraform destroy -auto-approve
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

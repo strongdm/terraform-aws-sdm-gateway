@@ -124,6 +124,115 @@ resource "aws_iam_instance_profile" "ssm_profile" {
 
 data "aws_caller_identity" "current" {}
 
+# IAM role for GitHub Actions to assume during integration tests
+resource "aws_iam_role" "github_actions_role" {
+  name = "github-actions-integration-test-role-${random_id.test_id.hex}"
+  assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role_policy.json
+  tags = merge(var.tags, {
+    Name      = "github-actions-integration-test-role-${random_id.test_id.hex}"
+    ManagedBy = "terraform"
+  })
+}
+
+data "aws_iam_policy_document" "github_actions_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/anthony-github-action-user"]
+    }
+  }
+}
+
+# Comprehensive policy for GitHub Actions role
+resource "aws_iam_role_policy" "github_actions_permissions" {
+  name = "github-actions-integration-test-permissions-${random_id.test_id.hex}"
+  role = aws_iam_role.github_actions_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "SecretsManagerPermissions",
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:DeleteSecret",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetResourcePolicy",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:ListSecrets",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:TagResource",
+          "secretsmanager:UntagResource",
+          "secretsmanager:UpdateSecret"
+        ],
+        Resource = "*"
+      },
+      {
+        Sid    = "EC2Permissions",
+        Effect = "Allow",
+        Action = [
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:CreateSecurityGroup",
+          "ec2:CreateTags",
+          "ec2:DeleteSecurityGroup",
+          "ec2:DescribeImages",
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceAttribute",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeTags",
+          "ec2:DescribeVpcs",
+          "ec2:RevokeSecurityGroupEgress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RunInstances",
+          "ec2:TerminateInstances"
+        ],
+        Resource = "*"
+      },
+      {
+        Sid    = "IAMPermissions",
+        Effect = "Allow",
+        Action = [
+          "iam:AttachRolePolicy",
+          "iam:CreateInstanceProfile",
+          "iam:CreateRole",
+          "iam:DeleteInstanceProfile",
+          "iam:DeleteRole",
+          "iam:DeleteRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:GetInstanceProfile",
+          "iam:GetRole",
+          "iam:GetRolePolicy",
+          "iam:ListAttachedRolePolicies",
+          "iam:ListInstanceProfilesForRole",
+          "iam:ListRolePolicies",
+          "iam:PassRole",
+          "iam:PutRolePolicy",
+          "iam:AddRoleToInstanceProfile",
+          "iam:RemoveRoleFromInstanceProfile",
+          "iam:TagInstanceProfile",
+          "iam:TagRole",
+          "iam:UntagInstanceProfile",
+          "iam:UntagRole"
+        ],
+        Resource = "*"
+      },
+      {
+        Sid    = "STSPermissions",
+        Effect = "Allow",
+        Action = [
+          "sts:GetCallerIdentity"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy" "allow_get_secret" {
   name = "allow-get-secret-integration-test-${random_id.test_id.hex}"
   role = aws_iam_role.ssm_role.id
@@ -160,4 +269,9 @@ output "iam_instance_profile_name" {
 output "iam_role_name" {
   description = "The name of the IAM role"
   value       = aws_iam_role.ssm_role.name
+}
+
+output "github_actions_role_arn" {
+  description = "The ARN of the GitHub Actions role to assume"
+  value       = aws_iam_role.github_actions_role.arn
 } 
