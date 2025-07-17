@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"math/rand"
 	"net"
 	"os"
 	"os/exec"
@@ -15,6 +16,9 @@ import (
 
 // TODO: Needs a refactoring, complex function.
 func TestTerraformIntegration(t *testing.T) {
+	// Generate a random suffix for unique resource names
+	randSuffix := fmt.Sprintf("%d", rand.Intn(10000))
+
 	// Step 1: Deploy prerequisites (security group)
 	prereqOpts := &terraform.Options{
 		TerraformDir: "./prerequisites",
@@ -48,7 +52,7 @@ func TestTerraformIntegration(t *testing.T) {
 			"aws_security_group_id":       securityGroupID,
 			"sdm_admin_token_secret_name": secretName,
 			"sdm_admin_token_secret_key":  "admin_token",
-			"sdm_gateway_instance_name":   "sdm-gw-integration-test",
+			"sdm_gateway_instance_name":   fmt.Sprintf("sdm-gw-integration-test-%s", randSuffix),
 			"aws_iam_instance_profile":    terraform.Output(t, prereqOpts, "iam_instance_profile_name"),
 		},
 		EnvVars: map[string]string{

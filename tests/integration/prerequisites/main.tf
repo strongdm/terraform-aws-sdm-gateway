@@ -20,17 +20,35 @@ variable "SDM_ADMIN_TOKEN" {
   sensitive   = true
 }
 
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.1"
+    }
+  }
+}
+
 provider "aws" {
   region = var.aws_region
 }
+
+# Generate a random suffix for unique resource names
+resource "random_id" "test_id" {
+  byte_length = 4
+}
 resource "aws_security_group" "sg" {
-  name        = "sdm-gw-sg-sdm"
+  name        = "sdm-gw-sg-sdm-${random_id.test_id.hex}"
   description = "Security group for the StrongDM gateway"
   vpc_id      = var.vpc_id
 
 
   tags = merge(var.tags, {
-    Name      = "sdm-gateway-sg"
+    Name      = "sdm-gateway-sg-${random_id.test_id.hex}"
     ManagedBy = "terraform"
   })
 }
@@ -54,7 +72,7 @@ resource "aws_vpc_security_group_egress_rule" "sdm_sg_egress_rule" {
 
 # AWS Secrets Manager secret for SDM admin token
 resource "aws_secretsmanager_secret" "sdm_admin_token" {
-  name                    = "sdm-admin-token-integration-test"
+  name                    = "sdm-admin-token-integration-test-${random_id.test_id.hex}"
   force_overwrite_replica_secret = true
   recovery_window_in_days = 0
   tags = merge(var.tags, {
@@ -72,10 +90,10 @@ resource "aws_secretsmanager_secret_version" "sdm_admin_token_version" {
 
 # IAM role for EC2 instance
 resource "aws_iam_role" "ssm_role" {
-  name = "sdm-gateway-ssm-role-integration-test"
+  name = "sdm-gateway-ssm-role-integration-test-${random_id.test_id.hex}"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role_policy.json
   tags = merge(var.tags, {
-    Name      = "sdm-gateway-ssm-role-integration-test"
+    Name      = "sdm-gateway-ssm-role-integration-test-${random_id.test_id.hex}"
     ManagedBy = "terraform"
   })
 }
@@ -96,10 +114,10 @@ resource "aws_iam_role_policy_attachment" "ssm_core" {
 }
 
 resource "aws_iam_instance_profile" "ssm_profile" {
-  name = "sdm-gateway-ssm-profile-integration-test"
+  name = "sdm-gateway-ssm-profile-integration-test-${random_id.test_id.hex}"
   role = aws_iam_role.ssm_role.name
   tags = merge(var.tags, {
-    Name      = "sdm-gateway-ssm-profile-integration-test"
+    Name      = "sdm-gateway-ssm-profile-integration-test-${random_id.test_id.hex}"
     ManagedBy = "terraform"
   })
 }
@@ -107,7 +125,7 @@ resource "aws_iam_instance_profile" "ssm_profile" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role_policy" "allow_get_secret" {
-  name = "allow-get-secret-integration-test"
+  name = "allow-get-secret-integration-test-${random_id.test_id.hex}"
   role = aws_iam_role.ssm_role.id
 
   policy = jsonencode({
