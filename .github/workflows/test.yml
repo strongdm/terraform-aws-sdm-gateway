@@ -92,7 +92,7 @@ jobs:
       if: always()
       run: |
         cd tests/integration
-        terraform destroy -auto-approve -var-file="testing.tfvars" || true
+        terraform destroy -auto-approve || true
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
