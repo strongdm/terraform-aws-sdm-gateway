@@ -183,6 +183,7 @@ resource "aws_iam_role_policy" "github_actions_permissions" {
           "ec2:DescribeInstanceAttribute",
           "ec2:DescribeNetworkInterfaces",
           "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSecurityGroupRules",
           "ec2:DescribeSubnets",
           "ec2:DescribeTags",
           "ec2:DescribeVpcs",
