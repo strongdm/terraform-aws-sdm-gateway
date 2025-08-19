@@ -187,6 +187,7 @@ resource "aws_iam_role_policy" "github_actions_permissions" {
           "ec2:DescribeSubnets",
           "ec2:DescribeTags",
           "ec2:DescribeVpcs",
+          "ec2:DescribeVpcAttribute",
           "ec2:RevokeSecurityGroupEgress",
           "ec2:RevokeSecurityGroupIngress",
           "ec2:RunInstances",
