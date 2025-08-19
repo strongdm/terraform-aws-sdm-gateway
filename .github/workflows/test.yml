@@ -88,8 +88,14 @@ jobs:
     - name: Run Terratest integration tests
       run: make integration-test
 
-    - name: Cleanup Prerequisites (if tests fail)
-      if: failure()
+    - name: Cleanup Terratest Resources
+      if: always()
+      run: |
+        cd tests/integration
+        terraform destroy -auto-approve -var-file="testing.tfvars" || true
+
+    - name: Cleanup Prerequisites
+      if: always()
       run: |
         cd tests/integration/prerequisites
         terraform destroy -auto-approve

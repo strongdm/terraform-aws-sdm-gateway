@@ -42,7 +42,7 @@ resource "random_id" "test_id" {
   byte_length = 4
 }
 resource "aws_security_group" "sg" {
-  name        = "sdm-gw-sg-sdm-gateway"
+  name        = "sdm-gw-sg-sdm-gateway-${random_id.test_id.hex}"
   description = "Security group for the StrongDM gateway"
   vpc_id      = var.vpc_id
 
@@ -72,7 +72,7 @@ resource "aws_vpc_security_group_egress_rule" "sdm_sg_egress_rule" {
 
 # AWS Secrets Manager secret for SDM admin token
 resource "aws_secretsmanager_secret" "sdm_admin_token" {
-  name                    = "sdm-admin-token-integration-test-gateway"
+  name                    = "sdm-admin-token-integration-test-gateway-${random_id.test_id.hex}"
   force_overwrite_replica_secret = true
   recovery_window_in_days = 0
   tags = merge(var.aws_tags, {
@@ -90,7 +90,7 @@ resource "aws_secretsmanager_secret_version" "sdm_admin_token_version" {
 
 # IAM role for EC2 instance
 resource "aws_iam_role" "ssm_role" {
-  name = "sdm-gateway-ssm-role-integration-test-gateway"
+  name = "sdm-gateway-ssm-role-integration-test-gateway-${random_id.test_id.hex}"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role_policy.json
   tags = merge(var.aws_tags, {
     Name      = "sdm-gateway-ssm-role-integration-test-gateway"
@@ -114,7 +114,7 @@ resource "aws_iam_role_policy_attachment" "ssm_core" {
 }
 
 resource "aws_iam_instance_profile" "ssm_profile" {
-  name = "sdm-gateway-ssm-profile-integration-test-gateway"
+  name = "sdm-gateway-ssm-profile-integration-test-gateway-${random_id.test_id.hex}"
   role = aws_iam_role.ssm_role.name
   tags = merge(var.aws_tags, {
     Name      = "sdm-gateway-ssm-profile-integration-test-gateway"
@@ -126,7 +126,7 @@ data "aws_caller_identity" "current" {}
 
 # IAM role for GitHub Actions to assume during integration tests
 resource "aws_iam_role" "github_actions_role" {
-  name = "github-actions-integration-test-role-gateway"
+  name = "github-actions-integration-test-role-gateway-${random_id.test_id.hex}"
   assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role_policy.json
   tags = merge(var.aws_tags, {
     Name      = "github-actions-integration-test-role-gateway"
@@ -146,7 +146,7 @@ data "aws_iam_policy_document" "github_actions_assume_role_policy" {
 
 # Comprehensive policy for GitHub Actions role
 resource "aws_iam_role_policy" "github_actions_permissions" {
-  name = "github-actions-integration-test-permissions-gateway"
+  name = "github-actions-integration-test-permissions-gateway-${random_id.test_id.hex}"
   role = aws_iam_role.github_actions_role.id
 
   policy = jsonencode({
@@ -248,7 +248,7 @@ resource "aws_iam_role_policy" "github_actions_permissions" {
 }
 
 resource "aws_iam_role_policy" "allow_get_secret" {
-  name = "allow-get-secret-integration-test-gateway"
+  name = "allow-get-secret-integration-test-gateway-${random_id.test_id.hex}"
   role = aws_iam_role.ssm_role.id
 
   policy = jsonencode({
