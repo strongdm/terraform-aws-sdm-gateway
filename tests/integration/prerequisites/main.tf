@@ -136,7 +136,7 @@ resource "aws_iam_role" "github_actions_role" {
 
 data "aws_iam_policy_document" "github_actions_assume_role_policy" {
   statement {
-    actions = ["sts:AssumeRole"]
+    actions = ["sts:AssumeRole", "sts:TagSession"]
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/anthony-github-action-user"]
