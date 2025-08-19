@@ -3,32 +3,14 @@ variable "aws_region" {
   type        = string
 }
 
-variable "tags" {
-  description = "Tags to apply to all resources."
-  type        = map(string)
-  default     = {}
-}
-
-variable "vpc_id" {
-  description = "The VPC ID where the gateway instance will be deployed"
+variable "gateway_instance_name_1" {
+  description = "The gateway instance name"
   type        = string
 }
 
-variable "subnet_id" {
-  description = "The subnet ID where the gateway instance will be deployed"
+variable "gateway_instance_name_2" {
+  description = "The second gateway instance name"
   type        = string
-}
-
-variable "SDM_API_ACCESS_KEY" {
-  description = "The API access key for the StrongDM API"
-  type        = string
-  sensitive   = true
-}
-
-variable "SDM_API_SECRET_KEY" {
-  description = "The API secret key for the StrongDM API"
-  type        = string
-  sensitive   = true
 }
 
 variable "SDM_ADMIN_TOKEN" {
@@ -37,12 +19,40 @@ variable "SDM_ADMIN_TOKEN" {
   sensitive   = true
 }
 
-variable "gateway_instance_name_1" {
-  description = "The gateway instance name"
+variable "sdm_admin_token_secret_key" {
+  description = "The key name in the AWS Secrets Manager secret for the SDM admin token."
   type        = string
 }
 
-variable "gateway_instance_name_2" {
-  description = "The second gateway instance name"
+variable "sdm_admin_token_secret_name" {
+  description = "The name of the AWS Secrets Manager secret to store the SDM admin token."
+  type        = string
+}
+
+variable "sdm_app_domain" {
+  description = "The StrongDM control plane domain the gateway connects to"
+  type        = string
+  default     = "app.strongdm.com"
+}
+
+variable "sdm_node_name" {
+  description = "The StrongDM node name to register the gateway with"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_id" {
+  description = "The subnet ID where the gateway instance will be deployed"
+  type        = string
+}
+
+variable "aws_tags" {
+  description = "Tags to apply to all resources."
+  type        = map(string)
+  default     = {}
+}
+
+variable "vpc_id" {
+  description = "The VPC ID where the gateway instance will be deployed"
   type        = string
 }

@@ -3,7 +3,7 @@ output "ec2_instance_public_ip" {
   value       = module.sdm_gateway_1.ec2_instance_public_ip
 }
 output "sdm_gateway1_name" {
-  description = "EC2 instance public IP"
+  description = "EC2 instance name"
   value       = module.sdm_gateway_1.gateway_instance_name
 }
 output "ec2_instance_public_ip_2" {
@@ -11,6 +11,6 @@ output "ec2_instance_public_ip_2" {
   value       = module.sdm_gateway_2.ec2_instance_public_ip
 }
 output "sdm_gateway2_name" {
-  description = "EC2 instance public IP"
+  description = "EC2 instance name"
   value       = module.sdm_gateway_2.gateway_instance_name
 }
