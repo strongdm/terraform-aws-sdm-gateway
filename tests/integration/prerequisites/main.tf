@@ -72,9 +72,9 @@ resource "aws_vpc_security_group_egress_rule" "sdm_sg_egress_rule" {
 
 # AWS Secrets Manager secret for SDM admin token
 resource "aws_secretsmanager_secret" "sdm_admin_token" {
-  name                    = "sdm-admin-token-integration-test-gateway-${random_id.test_id.hex}"
+  name                           = "sdm-admin-token-integration-test-gateway-${random_id.test_id.hex}"
   force_overwrite_replica_secret = true
-  recovery_window_in_days = 0
+  recovery_window_in_days        = 0
   tags = merge(var.aws_tags, {
     Name      = "sdm-admin-token-integration-test"
     ManagedBy = "terraform"
@@ -82,7 +82,7 @@ resource "aws_secretsmanager_secret" "sdm_admin_token" {
 }
 
 resource "aws_secretsmanager_secret_version" "sdm_admin_token_version" {
-  secret_id     = aws_secretsmanager_secret.sdm_admin_token.id
+  secret_id = aws_secretsmanager_secret.sdm_admin_token.id
   secret_string = jsonencode({
     admin_token = var.SDM_ADMIN_TOKEN
   })
@@ -90,7 +90,7 @@ resource "aws_secretsmanager_secret_version" "sdm_admin_token_version" {
 
 # IAM role for EC2 instance
 resource "aws_iam_role" "ssm_role" {
-  name = "sdm-gateway-ssm-role-integration-test-gateway-${random_id.test_id.hex}"
+  name               = "sdm-gateway-ssm-role-integration-test-gateway-${random_id.test_id.hex}"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role_policy.json
   tags = merge(var.aws_tags, {
     Name      = "sdm-gateway-ssm-role-integration-test-gateway"
@@ -126,7 +126,7 @@ data "aws_caller_identity" "current" {}
 
 # IAM role for GitHub Actions to assume during integration tests
 resource "aws_iam_role" "github_actions_role" {
-  name = "github-actions-integration-test-role-gateway-${random_id.test_id.hex}"
+  name               = "github-actions-integration-test-role-gateway-${random_id.test_id.hex}"
   assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role_policy.json
   tags = merge(var.aws_tags, {
     Name      = "github-actions-integration-test-role-gateway"

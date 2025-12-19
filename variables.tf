@@ -69,3 +69,15 @@ variable "sdm_use_instance_name" {
   type        = bool
   default     = false
 }
+
+variable "associate_public_ip_address" {
+  description = "Whether to associate a public IP address with the gateway instance. Set to false for private subnets."
+  type        = bool
+  default     = true
+}
+
+variable "ami_id" {
+  description = "Optional AMI ID to use for the gateway instance. If not specified, the latest StrongDM gateway AMI will be used."
+  type        = string
+  default     = ""
+}
