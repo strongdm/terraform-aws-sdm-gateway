@@ -41,18 +41,32 @@ variable "sdm_node_name" {
   default     = ""
 }
 
-variable "subnet_id" {
-  description = "The subnet ID where the gateway instance will be deployed"
-  type        = string
-}
-
 variable "aws_tags" {
   description = "Tags to apply to all resources."
   type        = map(string)
   default     = {}
 }
 
-variable "vpc_id" {
-  description = "The VPC ID where the gateway instance will be deployed"
+variable "vpc_cidr" {
+  description = "CIDR block for the VPC"
   type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "public_subnet_cidr" {
+  description = "CIDR block for the public subnet"
+  type        = string
+  default     = "10.0.1.0/24"
+}
+
+variable "private_subnet_cidr" {
+  description = "CIDR block for the private subnet"
+  type        = string
+  default     = "10.0.2.0/24"
+}
+
+variable "ami_id" {
+  description = "Optional AMI ID to use for the gateway instances. If not specified, the latest StrongDM gateway AMI will be used."
+  type        = string
+  default     = ""
 }

@@ -41,11 +41,12 @@ data "aws_ami" "latest_gateway" {
 }
 
 resource "aws_instance" "gateway_ec2" {
-  ami                    = data.aws_ami.latest_gateway.id
-  instance_type          = var.aws_instance_type
-  subnet_id              = data.aws_subnet.subnet.id
-  vpc_security_group_ids = [var.aws_security_group_id]
-  user_data              = base64encode(local.user_data)
+  ami                         = var.ami_id != "" ? var.ami_id : data.aws_ami.latest_gateway.id
+  instance_type               = var.aws_instance_type
+  subnet_id                   = data.aws_subnet.subnet.id
+  vpc_security_group_ids      = [var.aws_security_group_id]
+  associate_public_ip_address = var.associate_public_ip_address
+  user_data_base64            = base64encode(local.user_data)
   tags = merge(local.default_tags, {
     Name = var.sdm_gateway_instance_name
   })
